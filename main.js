@@ -191,7 +191,7 @@ Lightning.prototype.update = function () {
 //into a 'lightning bolt'
 function getDemBolts(startX, startY, endX, endY) {
     var bolts = [];
-    var minSegmentLength = 7;
+    var minSegmentLength = 15;
     var a = startX - endX;
     var b = startY - endY;
     var segmentLength = Math.ceil(Math.sqrt( a*a + b*b ));
