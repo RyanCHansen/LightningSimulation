@@ -166,7 +166,7 @@ Lightning.prototype.draw = function () {
     this.color = "hsla(180, 80%, 80%, "+ this.fade +")";
     this.ctx.shadowColor = this.color;
     this.ctx.shadowBlur = 10;
-    this.ctx.globalCompositeOperation = "lighter";
+    //this.ctx.globalCompositeOperation = "lighter";
     this.ctx.strokeStyle = this.color;
     this.ctx.lineWidth = 3;
 
