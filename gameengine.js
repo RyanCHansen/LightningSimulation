@@ -106,7 +106,7 @@ GameEngine.prototype.loop = function () {
 
 function Timer() {
     this.gameTime = 0;
-    this.maxStep = 0.05;
+    //this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
 }
 
@@ -115,9 +115,11 @@ Timer.prototype.tick = function () {
     var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
     this.wallLastTimestamp = wallCurrent;
 
-    var gameDelta = Math.min(wallDelta, this.maxStep);
-    this.gameTime += gameDelta;
-    return gameDelta;
+    //var gameDelta = Math.min(wallDelta, this.maxStep);
+    //this.gameTime += gameDelta;
+    this.gameTime += wallDelta;
+    //return gameDelta;
+    return wallDelta;
 }
 
 function Entity(game, x, y) {
