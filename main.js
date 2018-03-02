@@ -1,4 +1,3 @@
-
 var orbsThatHaveBeenHit = [9];
 var totalStrikes = 0;
 var totalJumps = 0;
@@ -106,7 +105,7 @@ Background.prototype.update = function () {
 
         totalStrikes = 0;
         totalJumps = 0;
-        this.game.entities[10].lightningTimer = 100;
+        //this.game.entities[10].lightningTimer = 100;
         this.gameOver = false;
         this.gameStart = false;
 
@@ -257,7 +256,9 @@ function Orb(game, sX, sY, orbNum) {
     this.description = "orb: " +this.orbNumber;
     this.startingLineOrb = false;
     this.finishLineOrb = false;
-    this.lightningTimer = 100;
+    this.lightningSpeed = 5;
+    this.newLightningStrikeCounter = 0;
+    this.readyToStrike = false;
     this.endGameLightningTimer = 100;
     this.hitByLightning = false;
     this.numberOfStrikesLeft = 0;
@@ -370,7 +371,7 @@ Orb.prototype.update = function () {
 
             //if the red orb was hit, end the simulation
             if (pickedOrb.orbNumber == 90) {
-                this.game.entities[10].lightningTimer = -1;
+                this.game.entities[0].gameOver = true;
                 pickedOrb.strikesLeft = 0;
             }
         } else {
@@ -398,9 +399,25 @@ Orb.prototype.update = function () {
         }
     } 
 
+
+    //replaced old lightning timer with this
+    //
+    //this timer is tied to the game clock which lets the
+    //'starting orb' know when it is time to shoot off the
+    //next lightning strike.
+    if (this.newLightningStrikeCounter > 3.75 && this.startingLineOrb == true
+                                              && this.game.entities[0].gameOver == false) {
+        this.readyToStrike = true;
+
+    } else if (this.startingLineOrb == true && this.game.entities[0].gameOver == false) {
+        this.newLightningStrikeCounter += this.lightningSpeed * this.game.clockTick;
+    } 
+
+
+ 
     //this is where the first lightning strike is started from orb 9
     //generates a bolt of lightning at the rate of lightning timer.
-    if (this.startingLineOrb == true && this.lightningTimer == 0
+    if (this.startingLineOrb == true && this.readyToStrike == true
                                      && this.game.entities[0].gameOver == false) {
         //console.log("new strike");
 
@@ -439,16 +456,14 @@ Orb.prototype.update = function () {
         orbsThatHaveBeenHit.push(pickedOrb.orbNumber);
         //console.log(orbsThatHaveBeenHit);
 
-        //reset the lightning timer for the starting orb
-        this.lightningTimer = 55;
+        this.newLightningStrikeCounter = 0;
+        this.readyToStrike = false;
         this.endGameLightningTimer = 100;
-    } else {
-        this.lightningTimer--;
     }
 
     //displays the 'winning' lightning line repeatedly
     //after the last orb has been hit
-    if (this.startingLineOrb == true && this.lightningTimer < 0 
+    if (this.startingLineOrb == true && this.game.entities[0].gameOver == true
                                      && this.endGameLightningTimer == 0) {
         for(var i = 0; i < (strikePath.length - 1); i++ ) {
             var startX = strikePath[i].x;
@@ -463,7 +478,7 @@ Orb.prototype.update = function () {
         this.endGameLightningTimer--;
     }
 
-    if (this.endGameLightningTimer == 70 && this.lightningTimer < 0 
+    if (this.endGameLightningTimer == 70 && this.game.entities[0].gameOver == true
                                          && this.game.entities[0].gameStart == false) {
         gameEngine.addEntity(new WWCD(gameEngine, AM.getAsset("./img/WWCD.png")));
     }
@@ -527,7 +542,6 @@ AM.downloadAll(function () {
     //and where the finish line is
     gameEngine.entities[10].startingLineOrb = true;
     gameEngine.entities[91].finishLineOrb = true;
-
     
 
     console.log("All Done!");
