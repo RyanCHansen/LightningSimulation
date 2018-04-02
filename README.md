@@ -1,3 +1,3 @@
 # LightningSimulation
 
-OH YEAH!
+Created for Computation Worlds, a lightning simulation which demonstrates emergence.
